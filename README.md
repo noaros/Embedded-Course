@@ -1,3 +1,9 @@
+I asked Claude to create an embedded course for me and it came up with a 60 hour course. At first it just provided the course outline, but then I asked it to make the material, which took quite a bit longer! The solutions are in the 'solutions' branch.
+
+Time to order the parts and start working through it!
+
+===============
+
 # Advanced Embedded Software on ARM Cortex-M / STM32
 
 An 11-module, roughly 60-hour course that takes experienced embedded engineers from "it works" to "it's deterministic, debuggable, secure and maintainable" on ARM Cortex-M. Each module has lecture notes, a hands-on lab on real STM32 hardware with starter code that builds out of the box, and a knowledge check.
