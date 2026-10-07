@@ -1,0 +1,100 @@
+# Lab 11 reference pipeline (GitHub Actions). Copy to .github/workflows/ci.yml
+# in your repository and adjust the paths. Three jobs:
+#   host-tests  unit tests with ASan/UBSan, coverage gate, cppcheck
+#   firmware    cross-compile everything, size report (and delta on PRs)
+#   hil         flash a NUCLEO-H723ZG on a self-hosted runner and check it streams
+name: firmware-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  LAB11: modules/11-testing-ci/lab/solution
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build gcovr cppcheck
+      - name: Build tests (sanitizers + coverage)
+        run: |
+          cmake -S "$LAB11" -B build-host -G Ninja -DLAB11_SANITIZE=ON -DLAB11_COVERAGE=ON
+          cmake --build build-host
+      - name: Run tests
+        run: ctest --test-dir build-host --output-on-failure
+      - name: Coverage gate (90% lines on lib/)
+        run: |
+          gcovr --root "$LAB11" --filter "$LAB11/lib/" --fail-under-line 90 \
+                --txt --xml-pretty --xml coverage.xml build-host
+      - name: Static analysis (warnings fail the build)
+        run: |
+          cppcheck --std=c11 --enable=warning,performance,portability --inline-suppr \
+                   --error-exitcode=1 -I "$LAB11/lib" "$LAB11/lib"
+      - name: Static analysis (style, informational)
+        continue-on-error: true
+        run: cppcheck --std=c11 --enable=style -I "$LAB11/lib" "$LAB11/lib"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  firmware:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install the Arm toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi
+          arm-none-eabi-gcc --version
+      - name: Build all firmware
+        run: |
+          cmake -S . -B build -G Ninja
+          cmake --build build
+      - name: Size report
+        run: |
+          python3 tools/size_report.py --elf 'build/**/*.elf' --json sizes.json --markdown \
+            >> "$GITHUB_STEP_SUMMARY"
+      - name: Size delta against the target branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git worktree add ../base "origin/${{ github.base_ref }}"
+          cmake -S ../base -B build-base -G Ninja && cmake --build build-base
+          python3 tools/size_report.py --elf 'build-base/**/*.elf' --json base-sizes.json
+          echo "### Size change vs ${{ github.base_ref }}" >> "$GITHUB_STEP_SUMMARY"
+          python3 tools/size_report.py --elf 'build/**/*.elf' --baseline base-sizes.json \
+            --markdown --max-flash-growth 2048 >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            build/**/*.elf
+            build/**/*.bin
+            build/**/*.map
+            sizes.json
+
+  hil:
+    # Needs a self-hosted runner labelled "nucleo-h723" with the board on USB,
+    # STM32CubeProgrammer installed, and pyserial.
+    if: github.event_name == 'push'
+    needs: firmware
+    runs-on: [self-hosted, nucleo-h723]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: build
+      - name: Flash the Lab 4 logger
+        run: |
+          ELF=$(find build -name lab04_solution.elf | head -1)
+          STM32_Programmer_CLI -c port=swd -d "$ELF" -v -rst
+      - name: Stream for 60 s, require zero gaps and CRC errors
+        run: python3 tools/lab4_rx.py "${HIL_SERIAL_PORT:-/dev/ttyACM0}" --seconds 60

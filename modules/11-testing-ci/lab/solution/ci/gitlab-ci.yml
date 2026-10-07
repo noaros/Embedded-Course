@@ -1,0 +1,46 @@
+# Lab 11 reference pipeline (GitLab CI). Copy to .gitlab-ci.yml.
+stages: [test, build, hil]
+
+variables:
+  LAB11: modules/11-testing-ci/lab/solution
+
+host-tests:
+  stage: test
+  image: ubuntu:24.04
+  before_script:
+    - apt-get update && apt-get install -y cmake ninja-build gcc git gcovr cppcheck python3
+  script:
+    - cmake -S "$LAB11" -B build-host -G Ninja -DLAB11_SANITIZE=ON -DLAB11_COVERAGE=ON
+    - cmake --build build-host
+    - ctest --test-dir build-host --output-on-failure --output-junit junit.xml
+    - gcovr --root "$LAB11" --filter "$LAB11/lib/" --fail-under-line 90 --cobertura coverage.xml build-host
+    - cppcheck --std=c11 --enable=warning,performance,portability --error-exitcode=1 -I "$LAB11/lib" "$LAB11/lib"
+  coverage: '/^lines: (\d+\.\d+)%/'
+  artifacts:
+    reports:
+      junit: build-host/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
+firmware:
+  stage: build
+  image: ubuntu:24.04
+  before_script:
+    - apt-get update && apt-get install -y cmake ninja-build git python3 gcc-arm-none-eabi libnewlib-arm-none-eabi
+  script:
+    - cmake -S . -B build -G Ninja
+    - cmake --build build
+    - python3 tools/size_report.py --elf 'build/**/*.elf' --json sizes.json --markdown | tee size-report.md
+  artifacts:
+    paths: [build/**/*.elf, build/**/*.map, sizes.json, size-report.md]
+
+hil:
+  stage: hil
+  tags: [nucleo-h723]   # a shell runner with the board attached
+  needs: [firmware]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - STM32_Programmer_CLI -c port=swd -d "$(find build -name lab04_solution.elf | head -1)" -v -rst
+    - python3 tools/lab4_rx.py "${HIL_SERIAL_PORT:-/dev/ttyACM0}" --seconds 60
