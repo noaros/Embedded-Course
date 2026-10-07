@@ -1,0 +1,14 @@
+build/
+build-*/
+*.elf
+*.bin
+*.hex
+*.map
+__pycache__/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+# Personal signing keys (the demo key is committed on purpose)
+tools/keys/*.pem
+!tools/keys/demo_ed25519.pem
