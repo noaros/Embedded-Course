@@ -2,7 +2,7 @@ I asked Claude to create an embedded course for me and it came up with a 60 hour
 
 Time to order the parts and start working through it!
 
-===============
+============================================================
 
 # Advanced Embedded Software on ARM Cortex-M / STM32
 
