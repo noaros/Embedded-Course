@@ -1,8 +1,10 @@
 I asked Claude to create an embedded course for me and it came up with a 60 hour course. At first it just provided the course outline, but then I asked it to make the material, which took quite a bit longer! The solutions are in the 'solutions' branch.
 
-Time to order the parts and start working through it!
+Time to order the parts and start working through it! Below are some notes as I did so.
 
-============================================================
+Trying Ninja resulted in an error, but CMake worked fine without.
+
+======================================================= Below is the Claude generated course overview ===========
 
 # Advanced Embedded Software on ARM Cortex-M / STM32
 
