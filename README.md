@@ -4,7 +4,7 @@ Time to order the parts and start working through it! Below are some notes as I 
 
 Trying Ninja resulted in an error, but CMake worked fine without.
 
-======================================================= Below is the Claude generated course overview ===========
+======================== Below is the Claude generated course overview ===========
 
 # Advanced Embedded Software on ARM Cortex-M / STM32
 
