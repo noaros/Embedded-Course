@@ -4,6 +4,8 @@ Time to order the parts and start working through it! Below are some notes as I 
 
 Trying Ninja resulted in an error, but CMake worked fine without.
 
+Ok so after going through the motions a bit, I'm not enamored with the material so far, as it just leads to so many more questions. But asking those questions is helpful. I find Claude a most wonderful teacher for that. Even the provided answers in the solutions branch lead to questions. The most efficient way to learn what this course wants to teach seems to be asking Claude to explain its own answers! And then to ask questions and more questions about the explanation.
+
 ======================== Below is the Claude generated course overview ===========
 
 # Advanced Embedded Software on ARM Cortex-M / STM32
