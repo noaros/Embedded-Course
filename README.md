@@ -6,7 +6,15 @@ Trying Ninja resulted in an error, but CMake worked fine without.
 
 Ok so after going through the motions a bit, I'm not enamored with the material so far, as it just leads to so many more questions. But asking those questions is helpful. I find Claude a most wonderful teacher for that. Even the provided answers in the solutions branch lead to questions. The most efficient way to learn what this course wants to teach seems to be asking Claude to explain its own answers! And then to ask questions and more questions about the explanation.
 
-I experimented with a few different ways of prompting Claude to teach its own course, one generated an interactive presentation for me, another was entirely quiz based. I also tried a wiki, but am still searching for the ideal learning method. One trick that has helped is to instruct Claude to define its terms with links or tool-tips to the corresponding definitions.
+I experimented with a few different ways of prompting Claude to teach its own course. Nne generated an interactive presentation for me, another was entirely quiz based. I also tried a wiki, but am still searching for the ideal learning method. Some of these methods generated Claude artfacts that I left private. Others added to branches in the code. One trick really helped across all formats was to instruct Claude to define its terms with links or tool-tips to the corresponding definitions.fa
+
+Perhaps I saved the best for last, as I really liked the artifact produced for module learn. As such, I'll make it public. 
+
+https://claude.ai/artifact/NfbxrX2S9A6wSxJiQvAs4X
+
+I used the following prompt: "teach me the main points of module 11, but in little chunks; for each term, acronym, or concept, make sure you provide a link or tooltip or popup for the definition. I am viewing with your web interface"
+
+I like the short chunk style interacts, the progress bar, and even the interactive question on each. And of course the tool-tips. I may have to use this method again!
 
 ======================== Below is the Claude generated course overview ===========
 
