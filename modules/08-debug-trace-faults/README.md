@@ -1,6 +1,6 @@
 # Module 8: Debugging, tracing and fault analysis
 
-**Time:** 5 h (2 h theory, 3 h lab) · **Board:** NUCLEO-H723ZG · **Lab:** [Crash detective](lab/README.md)
+**Time:** 5 h (2 h theory, 3 h lab) · **Board:** NUCLEO-H723ZG · **Lab:** [Crash detective](lab/README.md) · **Wiki:** [Module 8 wiki](wiki/README.md)
 
 By the end, you can root-cause a HardFault from a field crash log alone, without a debugger attached. In the field, you'll never have a probe on the board. You get what the firmware saved before it reset, and nothing else.
 
