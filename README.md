@@ -16,6 +16,10 @@ I used the following prompt: "teach me the main points of module 11, but in litt
 
 I like the short chunk style interacts, the progress bar, and even the interactive question on each. And of course the tool-tips. I may have to use this method again!
 
+I almost forgot about the "capstone" at the end. Applying the same method yields:
+
+https://claude.ai/artifact/QdHkZUNTpzx7EZqkpcRraq
+
 ======================== Below is the Claude generated course overview ===========
 
 # Advanced Embedded Software on ARM Cortex-M / STM32
